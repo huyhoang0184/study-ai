@@ -118,7 +118,6 @@ async function sendMessage() {
             if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
         }, 800);
     } else {
-        // Gọi Gemini API chính thức
         const activeKey = apiKey || localStorage.getItem('gemini_api_key');
 
         if (!activeKey) {
@@ -129,7 +128,7 @@ async function sendMessage() {
                         <i class="fa-solid fa-triangle-exclamation"></i>
                     </div>
                     <div class="text-sm text-yellow-400 pt-1">
-                        Chưa tìm thấy API Key! Hãy bấm vào <b>Bánh răng ⚙️</b> góc dưới bên trái để dán mã <code>AIzaSy...</code> vào nhé.
+                        Chưa tìm thấy API Key! Hãy bấm vào <b>Bánh răng ⚙️</b> ở góc dưới bên trái để dán mã vào nhé.
                     </div>
                 </div>
             `;
@@ -138,7 +137,8 @@ async function sendMessage() {
         }
 
         try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeKey.trim()}`, {
+            // Thử gọi model gemini-1.5-flash chuẩn tương thích web
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${activeKey.trim()}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -158,12 +158,12 @@ async function sendMessage() {
                             <i class="fa-solid fa-xmark"></i>
                         </div>
                         <div class="text-sm text-red-400 pt-1">
-                            <b>Lỗi kết nối Google API:</b> ${data.error.message || 'API Key không hợp lệ.'}
+                            <b>Lỗi từ Google API:</b> ${data.error.message || 'API Key không hợp lệ.'}
                         </div>
                     </div>
                 `;
             } else {
-                const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Không tìm thấy câu trả lời.";
+                const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Không tìm thấy nội dung phản hồi.";
                 const formattedHtml = typeof marked !== 'undefined' ? marked.parse(aiReply) : aiReply;
 
                 list.innerHTML += `
@@ -183,7 +183,7 @@ async function sendMessage() {
                         <i class="fa-solid fa-wifi"></i>
                     </div>
                     <div class="text-sm text-red-400 pt-1">
-                        <b>Lỗi mạng:</b> Không thể gửi yêu cầu. Vui lòng kiểm tra lại kết nối Internet!
+                        <b>Lỗi kết nối mạng hoặc trình duyệt chặn (CORS):</b> Đảm bảo tắt tính năng chặn quảng cáo (Brave Shields) trên trang này.
                     </div>
                 </div>
             `;

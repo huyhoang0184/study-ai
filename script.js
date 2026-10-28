@@ -128,7 +128,7 @@ async function sendMessage() {
                         <i class="fa-solid fa-triangle-exclamation"></i>
                     </div>
                     <div class="text-sm text-yellow-400 pt-1">
-                        Chưa tìm thấy API Key! Hãy bấm vào <b>Bánh răng ⚙️</b> ở góc dưới bên trái để dán mã vào nhé.
+                        Chưa tìm thấy API Key! Hãy bấm vào biểu tượng <b>Bánh răng ⚙️</b> ở góc dưới bên trái để dán mã vào nhé.
                     </div>
                 </div>
             `;
@@ -137,8 +137,8 @@ async function sendMessage() {
         }
 
         try {
-            // Sử dụng model gemini-1.5-flash theo chuẩn REST API ổn định trên trình duyệt
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${activeKey.trim()}`, {
+            // Sử dụng model chuẩn gemini-2.5-flash tương thích hoàn toàn
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeKey.trim()}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -183,7 +183,7 @@ async function sendMessage() {
                         <i class="fa-solid fa-wifi"></i>
                     </div>
                     <div class="text-sm text-red-400 pt-1">
-                        <b>Lỗi kết nối:</b> Kiểm tra lại mạng hoặc tắt trình chặn quảng cáo (Brave Shields).
+                        <b>Lỗi kết nối:</b> Kiểm tra lại mạng hoặc tắt trình chặn quảng cáo (Brave Shields) trên trang này.
                     </div>
                 </div>
             `;

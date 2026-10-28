@@ -137,13 +137,13 @@ async function sendMessage() {
         }
 
         try {
-            // Thử gọi model gemini-1.5-flash chuẩn tương thích web
+            // Sử dụng model gemini-1.5-flash theo chuẩn REST API ổn định trên trình duyệt
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${activeKey.trim()}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     contents: [{
-                        parts: [{ text: `Bạn là trợ lý học tập StudyAI chuyên môn ${currentSubject}. Hãy trả lời rõ ràng, chính xác bài tập sau cho học sinh: ${text}` }]
+                        parts: [{ text: `Bạn là trợ lý học tập StudyAI chuyên môn ${currentSubject}. Hãy trả lời rõ ràng, chính xác và đầy đủ cho học sinh: ${text}` }]
                     }]
                 })
             });
@@ -158,12 +158,12 @@ async function sendMessage() {
                             <i class="fa-solid fa-xmark"></i>
                         </div>
                         <div class="text-sm text-red-400 pt-1">
-                            <b>Lỗi từ Google API:</b> ${data.error.message || 'API Key không hợp lệ.'}
+                            <b>Lỗi Google API:</b> ${data.error.message}
                         </div>
                     </div>
                 `;
             } else {
-                const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Không tìm thấy nội dung phản hồi.";
+                const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Không tìm thấy phản hồi từ AI.";
                 const formattedHtml = typeof marked !== 'undefined' ? marked.parse(aiReply) : aiReply;
 
                 list.innerHTML += `
@@ -183,7 +183,7 @@ async function sendMessage() {
                         <i class="fa-solid fa-wifi"></i>
                     </div>
                     <div class="text-sm text-red-400 pt-1">
-                        <b>Lỗi kết nối mạng hoặc trình duyệt chặn (CORS):</b> Đảm bảo tắt tính năng chặn quảng cáo (Brave Shields) trên trang này.
+                        <b>Lỗi kết nối:</b> Kiểm tra lại mạng hoặc tắt trình chặn quảng cáo (Brave Shields).
                     </div>
                 </div>
             `;

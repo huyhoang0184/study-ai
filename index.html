@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyAI - Trợ Lý Học Tập Đa Năng</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Marked.js cho Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Custom CSS File -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="h-screen flex overflow-hidden select-none">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar"
+        class="w-72 bg-[#1e1f20] flex flex-col justify-between shrink-0 h-full border-r border-[#282a2c] transition-all duration-300 z-20">
+        <div>
+            <!-- Header Sidebar -->
+            <div class="p-4 flex items-center justify-between">
+                <button onclick="toggleSidebar()"
+                    class="p-2 text-gray-400 hover:text-white rounded-full hover:bg-[#282a2c] transition">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                    <span class="font-semibold text-lg text-gray-200">StudyAI</span>
+                    <span
+                        class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full font-medium">Pro</span>
+                </div>
+            </div>
+
+            <!-- Nút Cuộc trò chuyện mới -->
+            <div class="px-3 py-2">
+                <button onclick="startNewChat()"
+                    class="w-full flex items-center gap-3 px-4 py-3 rounded-full bg-[#131314] hover:bg-[#282a2c] text-gray-300 text-sm font-medium border border-[#37393b] transition shadow-sm">
+                    <i class="fa-solid fa-plus text-base text-gray-400"></i>
+                    <span>Cuộc trò chuyện mới</span>
+                </button>
+            </div>
+
+            <!-- Môn học Selection -->
+            <div class="px-3 py-2">
+                <label class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-3 mb-1 block">Chọn Môn
+                    Học</label>
+                <select id="subject-select" onchange="changeSubject(this.value)"
+                    class="w-full bg-[#131314] text-gray-200 text-xs rounded-xl px-3 py-2.5 border border-[#37393b] focus:outline-none focus:border-blue-500 cursor-pointer">
+                    <option value="Đa Môn / Tổng Hợp">🌐 Đa Môn / Tổng Hợp</option>
+                    <option value="Toán Học">📐 Toán Học</option>
+                    <option value="Vật Lý">⚛️ Vật Lý</option>
+                    <option value="Hóa Học">🧪 Hóa Học</option>
+                    <option value="Sinh Học">🧬 Sinh Học</option>
+                    <option value="Tin Học & Lập Trình">💻 Tin Học & Lập Trình</option>
+                    <option value="Ngữ Văn">📖 Ngữ Văn</option>
+                    <option value="Tiếng Anh">🇬🇧 Tiếng Anh</option>
+                    <option value="Lịch Sử">🏛️ Lịch Sử</option>
+                    <option value="Địa Lý">🌍 Địa Lý</option>
+                    <option value="Giáo Dục Công Dân">⚖️ Giáo Dục Công Dân</option>
+                </select>
+            </div>
+
+            <!-- Lịch sử Chat gần đây -->
+            <div class="px-3 py-2 overflow-y-auto max-h-[42vh]">
+                <div class="flex items-center justify-between px-3 py-1.5 text-xs text-gray-400 font-semibold">
+                    <span>Gần đây</span>
+                    <i class="fa-solid fa-sliders text-xs cursor-pointer hover:text-white"></i>
+                </div>
+                <div id="history-list" class="space-y-1 mt-1">
+                    <button onclick="loadHistory('Xây Dựng Web StudyAI')"
+                        class="w-full text-left px-3 py-2 rounded-lg text-xs text-gray-300 hover:bg-[#282a2c] truncate flex items-center gap-2">
+                        <i class="fa-regular fa-message text-gray-400"></i>
+                        <span class="truncate">Xây Dựng Web StudyAI</span>
+                    </button>
+                    <button onclick="loadHistory('Giải bài tập Đại số Lớp 7')"
+                        class="w-full text-left px-3 py-2 rounded-lg text-xs text-gray-300 hover:bg-[#282a2c] truncate flex items-center gap-2">
+                        <i class="fa-regular fa-message text-gray-400"></i>
+                        <span class="truncate">Giải bài tập Đại số Lớp 7</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Profile -->
+        <div class="p-3 border-t border-[#282a2c] flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center font-bold text-white text-xs">
+                    H</div>
+                <div class="flex flex-col">
+                    <span class="text-xs font-medium text-gray-200">Hoàng Nguyễn Huy</span>
+                    <span class="text-[10px] text-gray-400">Lớp 7A3 - Mac OS</span>
+                </div>
+            </div>
+            <button title="Cài đặt API Key" onclick="openApiKeyModal()"
+                class="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-[#282a2c]">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-full bg-[#131314] relative">
+
+        <!-- HeaderBar -->
+        <header class="h-14 flex items-center justify-between px-6 z-10 border-b border-[#282a2c]/40">
+            <div class="flex items-center gap-3">
+                <span class="text-lg font-semibold text-gray-200">StudyAI</span>
+                <span id="subject-badge"
+                    class="text-xs text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
+                    🌐 Đa Môn / Tổng Hợp
+                </span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button
+                    class="px-3 py-1.5 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium flex items-center gap-2 shadow-md transition">
+                    <i class="fa-solid fa-gem text-yellow-300"></i> Nâng cấp Pro
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat Area Container -->
+        <div id="chat-container" class="flex-1 overflow-y-auto px-4 md:px-0 py-6 max-w-3xl mx-auto w-full space-y-6">
+
+            <!-- Welcome View -->
+            <div id="welcome-view" class="py-12 text-left space-y-6">
+                <div>
+                    <h1
+                        class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-pink-400 bg-clip-text text-transparent mb-2">
+                        Xin chào, Hoàng
+                    </h1>
+                    <p class="text-2xl md:text-3xl font-medium text-gray-500">
+                        Hôm nay StudyAI hỗ trợ gì cho bạn?
+                    </p>
+                </div>
+
+                <!-- Suggestion Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-6">
+                    <button onclick="sendQuickPrompt('Giải giúp mình bài toán đại số Lớp 7 chi tiết từng bước')"
+                        class="p-4 rounded-2xl bg-[#1e1f20] hover:bg-[#282a2c] text-left border border-[#282a2c] transition group">
+                        <p class="text-xs text-gray-300 group-hover:text-white leading-relaxed">Giải bài tập Đại Số Lớp
+                            7 chi tiết</p>
+                        <i class="fa-solid fa-calculator text-red-400 mt-4 text-sm"></i>
+                    </button>
+                    <button onclick="sendQuickPrompt('Tạo ảnh minh họa hệ mặt trời không gian 3D rực rỡ')"
+                        class="p-4 rounded-2xl bg-[#1e1f20] hover:bg-[#282a2c] text-left border border-[#282a2c] transition group">
+                        <p class="text-xs text-gray-300 group-hover:text-white leading-relaxed">Tạo ảnh AI minh họa hệ
+                            mặt trời 3D</p>
+                        <i class="fa-solid fa-wand-magic-sparkles text-purple-400 mt-4 text-sm"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dynamic Messages List -->
+            <div id="messages-list" class="space-y-6 hidden"></div>
+        </div>
+
+        <!-- INPUT BAR -->
+        <div class="p-4 max-w-3xl mx-auto w-full">
+            <div class="gemini-input-container p-3 flex flex-col gap-2 relative shadow-lg">
+                <textarea id="user-input" rows="1" placeholder="Nhập câu hỏi bài tập hoặc yêu cầu..."
+                    class="w-full bg-transparent text-gray-200 text-sm px-3 py-1 focus:outline-none resize-none max-h-32"
+                    onkeydown="handleKeyPress(event)"></textarea>
+
+                <div class="flex items-center justify-between px-2 pt-1">
+                    <div class="flex items-center gap-2">
+                        <button
+                            class="w-8 h-8 rounded-full hover:bg-[#282a2c] text-gray-400 hover:text-white flex items-center justify-center transition"
+                            title="Đính kèm tệp">
+                            <i class="fa-solid fa-plus text-sm"></i>
+                        </button>
+                        <select id="ai-mode-select"
+                            class="bg-[#131314] text-gray-300 text-xs rounded-full px-3 py-1 border border-[#37393b] focus:outline-none cursor-pointer">
+                            <option value="chat">Gemini Tự động</option>
+                            <option value="image">Tạo ảnh AI</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button
+                            class="w-8 h-8 rounded-full hover:bg-[#282a2c] text-gray-400 hover:text-white flex items-center justify-center transition"
+                            title="Micro">
+                            <i class="fa-solid fa-microphone text-sm"></i>
+                        </button>
+                        <button id="send-btn" onclick="sendMessage()"
+                            class="w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center transition shadow-md">
+                            <i class="fa-solid fa-arrow-up text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <p class="text-[11px] text-gray-500 text-center mt-2">
+                StudyAI là trợ lý AI thông minh, có thể hỗ trợ giải đáp mọi môn học cho học sinh.
+            </p>
+        </div>
+    </main>
+
+    <!-- Modal Cài Đặt API Key -->
+    <div id="api-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center z-50">
+        <div class="bg-[#1e1f20] border border-[#37393b] rounded-2xl p-6 w-full max-w-md space-y-4 shadow-2xl">
+            <h3 class="text-lg font-bold text-gray-100 flex items-center gap-2">
+                <i class="fa-solid fa-key text-blue-400"></i> Cấu hình Gemini API Key
+            </h3>
+            <p class="text-xs text-gray-400 leading-relaxed">
+                Dán Gemini API Key của bạn vào đây để kích hoạt AI thực tế:
+            </p>
+            <input type="password" id="api-key-input" placeholder="Dán API Key (AIzaSy...)..."
+                class="w-full bg-[#131314] border border-[#37393b] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500">
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeApiKeyModal()"
+                    class="px-4 py-2 rounded-xl text-xs text-gray-300 hover:bg-[#282a2c]">Hủy</button>
+                <button onclick="saveApiKey()"
+                    class="px-4 py-2 rounded-xl text-xs bg-blue-600 hover:bg-blue-500 text-white font-medium">Lưu Cấu
+                    Hình</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script File -->
+    <script src="script.js"></script>
+</body>
+
+</html>
